@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 'use strict';
 
 const fs = require('fs');
@@ -43,7 +45,7 @@ if (cmd === 'read') {
     pet.name = args[5];
 
     pets.push(pet);
-    var petsJSON = JSON.stringify(pets);
+     petsJSON = JSON.stringify(pets);
 
     fs.writeFile(petsPath, petsJSON, function(writeErr) {
       if (writeErr) {
@@ -70,7 +72,7 @@ if (cmd === 'read') {
     newPet.kind = kind;
     newPet.name = name;
     pets[index] = newPet;
-    var petsJSON = JSON.stringify(pets);
+    const petsJSON = JSON.stringify(pets);
 
     fs.writeFile(petsPath, petsJSON, function(writeErr) {
       if (writeErr) {
@@ -79,6 +81,31 @@ if (cmd === 'read') {
       console.log(newPet);
     });
   });
+} else if (cmd === 'destroy') {
+  fs.readFile(petsPath, 'utf8', function(err, data) {
+    if (err) {
+      throw err;
+    }
+    if (args.length === 3) {
+      console.error(`Usage: ${node} ${file} destroy INDEX`);
+      process.exit(1);
+    }
+    const pets = JSON.parse(data);
+    const index = parseInt(args[3]);
+    console.log(pets.splice(index, 1));
+  });
+
+
+/*
+    const petsJSON = JSON.stringify(pets);
+    fs.writeFile(petsPath, petsJSON, function(writeErr) {
+      if (writeErr) {
+        throw writeErr;
+      }
+      console.log(removed);
+    });
+  });
+*/
 
 } else {
   console.error(`Usage: ${node} ${file} [read | create | update | destroy]`);
