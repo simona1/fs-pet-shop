@@ -22,7 +22,7 @@ if (cmd === 'read') {
     const index = parseInt(option);
     if (isNaN(index)) {
       console.log(pets);
-    } else if (index < 0 || index > pets.length) {
+    } else if (index < 0 || index >= pets.length) {
       console.error(`Usage: ${node} ${file} read INDEX`);
       process.exit(1);
     } else {
