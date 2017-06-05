@@ -65,14 +65,61 @@ app.post('/pets', function(req, res) {
   });
 });
 
-app.get('*', function(req, res) {
-  res.sendStatus(404);
+app.patch('/pets/:id', function(req, res) {
+  const index = parseInt(req.params.id);
+  const petInfo = req.body;
+
+  fs.readFile('pets.json', 'utf8', function(err, data){
+    if (err) {
+      res.sendStatus(404);
+      return;
+    }
+    res.set('Content-Type', 'application/json');
+    const pets = JSON.parse(data);
+
+    let pet = Object.assign({}, pets[index], petInfo);
+    pets[index] = pet;
+
+    const petsJSON = JSON.stringify(pets);
+    fs.writeFile('pets.json', petsJSON, function(writeErr) {
+      if (writeErr) {
+        throw writeErr;
+      }
+    });
+    res.set('Content-Type', 'application/json');
+    res.send(pets[index]);
+  });
 });
 
-app.listen(8000, nowListeningMessage);
+app.delete('/pets/:id', function(req, res) {
+  const index = parseInt(req.params.id);
 
-function nowListeningMessage() {
-  console.log('Currently listening on port 8000');
-}
+  fs.readFile('pets.json', 'utf8', function(err, data){
+    if (err) {
+      res.sendStatus(404);
+      return;
+    }
+    res.set('Content-Type', 'application/json');
+    const pets = JSON.parse(data);
+    const deleted = pets.splice(index, 1);
+
+    const petsJSON = JSON.stringify(pets);
+    fs.writeFile('pets.json', petsJSON, function(writeErr) {
+      if (writeErr) {
+        throw writeErr;
+      }
+    });
+    res.set('Content-Type', 'application/json');
+    res.send(deleted[0]);
+  });
+});
+
+
+
+
+
+app.listen(8000, () => {
+  console.log('Now listening on port 8000');
+});
 
 module.exports = app;
