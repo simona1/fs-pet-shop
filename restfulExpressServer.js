@@ -1,13 +1,14 @@
+const bodyParser = require('body-parser');
 const express = require('express');
 const fs = require('fs');
-const bodyParser = require('body-parser');
+const path = require('path');
 
 const app = express();
-
 app.use(bodyParser.json());
+const petsPath = path.join(__dirname, 'pets.json');
 
-app.get('/pets', function(req, res){
-  fs.readFile('pets.json', 'utf8', function(err, data) {
+app.get('/pets', function(req, res) {
+  fs.readFile(petsPath, 'utf8', function(err, data) {
     if (err) {
       res.sendStatus(404);
       return;
@@ -19,7 +20,7 @@ app.get('/pets', function(req, res){
 
 app.get('/pets/:id', function(req, res){
   const index = parseInt(req.params.id);
-  fs.readFile('pets.json', 'utf8', function(err, data) {
+  fs.readFile(petsPath, 'utf8', function(err, data) {
     if (err) {
       res.sendStatus(404);
       return;
@@ -36,7 +37,7 @@ app.get('/pets/:id', function(req, res){
 
 app.post('/pets', function(req, res) {
   const petInfo = req.body;
-  fs.readFile('pets.json', 'utf8', function(err, data){
+  fs.readFile(petsPath, 'utf8', function(err, data){
     if (err) {
       res.sendStatus(404);
       return;
@@ -47,7 +48,6 @@ app.post('/pets', function(req, res) {
       res.sendStatus(400);
       return;
     }
-
     const pet = {
       age: petInfo.age,
       kind: petInfo.kind,
@@ -69,7 +69,7 @@ app.patch('/pets/:id', function(req, res) {
   const index = parseInt(req.params.id);
   const petInfo = req.body;
 
-  fs.readFile('pets.json', 'utf8', function(err, data){
+  fs.readFile(petsPath, 'utf8', function(err, data){
     if (err) {
       res.sendStatus(404);
       return;
@@ -94,7 +94,7 @@ app.patch('/pets/:id', function(req, res) {
 app.delete('/pets/:id', function(req, res) {
   const index = parseInt(req.params.id);
 
-  fs.readFile('pets.json', 'utf8', function(err, data){
+  fs.readFile(petsPath, 'utf8', function(err, data){
     if (err) {
       res.sendStatus(404);
       return;
@@ -113,10 +113,6 @@ app.delete('/pets/:id', function(req, res) {
     res.send(deleted[0]);
   });
 });
-
-
-
-
 
 app.listen(8000, () => {
   console.log('Now listening on port 8000');
