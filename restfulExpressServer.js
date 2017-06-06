@@ -114,6 +114,10 @@ app.delete('/pets/:id', function(req, res) {
   });
 });
 
+app.get('*', function(req, res) {
+  res.sendStatus(404);
+});
+
 app.listen(8000, () => {
   console.log('Now listening on port 8000');
 });
